@@ -197,7 +197,7 @@
 
 执行如下指令，创建一个controller
 
-	iron g:controller Issues
+	$iron g:controller Issues
 
 生成文件
 
