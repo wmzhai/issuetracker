@@ -368,4 +368,88 @@ IssuesController在issues_controller.js里实现。首先，我们在subscriptio
 图6 Insert Issue页面显示
 
 
+## 显示Issue列表
 
+我们将issues_list.html的代码修改如下，以实现显示issue列表的功能。
+
+	<template name="IssuesList">
+	  <h1>Issues List</h1>
+	  <table class="table table-hover">
+	        <thead>
+	          <tr>
+	            <th>Title</th>
+	            <th>Description</th>
+	            <th>Due Date</th>
+	            <th>Priority</th>
+	            <th></th>
+	          </tr>
+	        </thead>
+	        <tbody>
+	          {{#each issues}}
+	            <tr>
+	              <td>{{title}}</td>
+	              <td>{{description}}</td>
+	              <td>{{dueDateFormatted}}</td>
+	              <td>
+	                {{#if priorityHigh}}
+	                  <span class="label label-danger">{{priority}}</span>
+	                {{/if}}
+	
+	                {{#if priorityMedium}}
+	                  <span class="label label-warning">{{priority}}</span>
+	                {{/if}}
+	
+	                {{#if priorityLow}}
+	                  <span class="label label-success">{{priority}}</span>
+	                {{/if}}
+	              </td>
+	              <td>
+	                {{#linkTo route='editIssue'}}
+	                  <i class="fa fa-pencil-square-o"></i>
+	                {{/linkTo}}
+	              </td>
+	            </tr>
+	          {{/each}}
+	
+	        </tbody>
+	      </table>
+	</template>
+
+在输出中，issue的优先级可以控制bootstrap的显示样式，具体有3种类型：label-danger, label-warning and label-success。为了决定每种类型显示成什么样子，可以通过修改 issues_list.js代码控制。
+
+	Template.IssuesList.events({
+	});
+	
+	Template.IssuesList.helpers({
+	  issues: function () {
+	    return Issues.find();
+	  },
+	  dueDateFormatted: function () {
+	    return moment(this.dueDate).format("MMM Do YY");
+	  },
+	  priorityHigh: function() {
+	    if (this.priority === 'High')
+	      return true;
+	    else
+	      return false;
+	  },
+	  priorityMedium: function() {
+	    if (this.priority === 'Medium')
+	      return true;
+	    else
+	      return false;
+	  },
+	  priorityLow: function() {
+	    if (this.priority === 'Low')
+	      return true;
+	    else
+	      return false;
+	  }
+	});
+
+
+最终显示效果如下
+
+![](images/issues-list-done.png)
+
+图6 最终Issue List页面显示
