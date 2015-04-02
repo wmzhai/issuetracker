@@ -1,4 +1,4 @@
-# 如何使用Meteor和Iron Scaffolding快速搭建web程序
+# 如何使用Iron脚手架工具快速搭建Meteor程序
 
 采用Meteor框架搭建现代的web应用很快很方便，不过如果你使用iron脚手架工具和autoforms工具包的话，这个过程会更加快捷，这个例子就展示了如何一步一步地新建一个程序。
 
