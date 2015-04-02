@@ -289,3 +289,37 @@
 
 图4 访问issues list网页
 
+
+
+## 对routes进行安全控制
+
+在routes.js加入以下代码以防止非授权的针对InsertIssue和IssuesList的访问
+
+	Router.onBeforeAction(function() {
+	  if (!Meteor.user()) {
+	    this.render('AccessDenied');
+	  } else
+	  {
+	     this.next();
+	  }
+	}, {only: ['issuesList', 'insertIssue']});
+
+然后，我们用如下template指令AccessDenied生成页面
+
+	$iron g:template AccessDenied
+
+其中，access_denied.html的内容修改如下
+
+	<template name="AccessDenied">
+	  <div class="alert alert-danger" role="alert">
+	    <h2>Access Denied</h2>
+	    <hr>
+	    <h4>Please log in to access this page!</h4>
+	  </div>
+	</template>
+
+这时候在未登录时访问http://localhost:3000/issues_list会有如下显示
+
+![](images/access-denied.png)
+
+图4 访问issues list网页显示Access Denided
