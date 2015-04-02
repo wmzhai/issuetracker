@@ -323,3 +323,30 @@
 ![](images/access-denied.png)
 
 图4 访问issues list网页显示Access Denided
+
+
+## 实现IssuesController
+
+IssuesController在issues_controller.js里实现。首先，我们在subscriptions函数里通过subscribe使用2个参数来从服务器端订阅issues，第一个参数是我们需要订阅的collection的名字'issues',第二个参数是用户的id，这样限制只能获取该用户的issue。 然后，data属性用来获取特定id的数据项，在这里我们使用了findOne函数。 最后3个函数insert, list and edit则分别用来渲染不同的模板。该类代码如下
+
+	IssuesController = RouteController.extend({
+	  subscriptions: function () {
+	    this.subscribe('issues', Meteor.userId());
+	  },
+	
+	  data: function () {
+	    return Issues.findOne({_id: this.params._id});
+	  },
+	
+	  insert: function () {
+	    this.render('InsertIssue', {});
+	  },
+	
+	  list: function() {
+	    this.render('IssuesList', {});
+	  },
+	
+	  edit: function() {
+	    this.render('EditIssue', {});
+	  }
+	});
