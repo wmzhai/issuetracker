@@ -21,3 +21,113 @@
 ![](images/iron-create-app.png)
 
 图1 新建程序的目录结构
+
+
+## 安装新的package
+
+我们通过下述指令添加一些常规的meteor package，我们将在项目中使用
+
+	$iron add twbs:bootstrap
+	$iron add aldeed:collection2
+	$iron add aldeed:autoform
+	$iron add aldeed:delete-button
+	$iron add momentjs:moment
+	$iron add accounts-password
+	$iron add ian:accounts-ui-bootstrap-3
+	$iron add natestrauser:font-awesome
+
+然后我们再通过下属指令删除2个不使用的package
+
+	$iron remove autopublish
+	$iron remove insecure
+
+这是我们如果打开app/.meteor/packages文件的话，应该可以看到如下package
+
+	meteor-platform
+	iron:router
+	twbs:bootstrap
+	aldeed:collection2
+	aldeed:autoform
+	aldeed:delete-button
+	momentjs:moment
+	accounts-password
+	ian:accounts-ui-bootstrap-3
+	natestrauser:font-awesome
+
+
+## 添加数据模型
+
+本项目管理issue的跟踪，只涉及到一个数据模型issue。在meteor中，数据被表述称collections，下述iron指令可以用于添加一个名叫issue的collection
+
+	iron g:collection issues
+
+这条指令实际上生成一个文件
+	
+	app/lib/collections/issues.js
+
+打开这个文件，修改成如下内容
+
+	Issues = new Mongo.Collection('issues');
+	
+	Issues.attachSchema(new SimpleSchema({
+  		title:{
+    		type: String,
+    		label: "Title",
+    		max: 100
+  		},
+
+  		description:{
+    		type: String,
+   			label: "Description",
+  			max: 1024
+  		},
+
+  		dueDate:
+  		{
+    		type: Date,
+    		label: "Due Date",
+    		optional: true
+  		},
+
+  		priority:
+ 		{
+    		type: String,
+    		label: "Priority",
+    		allowedValues: ['High', 'Medium', 'Low'],
+    		optional: true
+  		},
+
+  		createdBy: {
+    		type: String,
+    		autoValue: function() {
+       		return this.userId
+    	}
+  	}
+	}));
+
+	if (Meteor.isServer) {
+  		Issues.allow({
+    		insert: function (userId, doc) {
+      			return userId;
+    		},
+
+	    	update: function (userId, doc, fieldNames, modifier) {
+	      		return userId;
+	    	},
+	
+	    	remove: function (userId, doc) {
+	      		return userId;
+	    	}
+  		});
+	}
+
+在上述代码中，首先我们创建了一个Mongo的collection，并将他的引用保存在Issues里。然后，一个collection的schema被attach到这个对象上，用来描述数据库结构。 在这里我们使用了一个SimpleSchema对象，这个对象包含4个字段title, description, dueDate and priority。 对于每一个字段，都定义了一个type和label，最后title和description都定义了max字段来限制字符串的长度。 而priority字段则设置了几个allowedValues作为其值域。
+
+
+另外，我们在 publish.js文件里面添加如下代码，以便客户端访问特定的数据集。
+
+	Meteor.publish('issues', function (userId) {
+  		return Issues.find({createdBy: userId});
+	});
+
+这里的publish函数接受一个参数：userId。 这个参数用以限制被发布的对象仅限于创建它的user。
