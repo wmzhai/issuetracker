@@ -2,7 +2,7 @@
 
 采用Meteor框架搭建现代的web应用很快很方便，不过如果你使用iron脚手架工具和autoforms工具包的话，这个过程会更加快捷，这个例子就展示了如何一步一步地新建一个程序。
 
-## 安装Meteor和Iron工具
+##1. 安装Meteor和Iron工具
 
 使用如下两个指令分别安装meteor和iron
 
@@ -10,7 +10,7 @@
 	$ npm install -g iron-meteor
 	
 
-## 新建程序
+##2. 新建程序
 
 我们使用如下指令创建一个叫做issuetracker的程序
 
@@ -23,7 +23,7 @@
 图1 新建程序的目录结构
 
 
-## 安装新的package
+##3. 安装新的package
 
 我们通过下述指令添加一些常规的meteor package，我们将在项目中使用
 
@@ -55,7 +55,7 @@
 	natestrauser:font-awesome
 
 
-## 添加数据模型
+##4. 添加数据模型
 
 本项目管理issue的跟踪，只涉及到一个数据模型issue。在meteor中，数据被表述称collections，下述iron指令可以用于添加一个名叫issue的collection
 
@@ -130,7 +130,7 @@
 这里的publish函数接受一个参数：userId。 这个参数用以限制被发布的对象仅限于创建它的user。
 
 
-## 初始化用户界面
+##5. 初始化用户界面
 
  我们使用bootstrap来初始化用户界面，用户界面整体放在MasterLayout这个模板里，他的代码在如下文件里
 
@@ -193,7 +193,7 @@
 图2 初始化程序界面
 
 
-## 创建Controller和Route
+##6. 创建Controller和Route
 
 执行如下指令，创建一个controller
 
@@ -291,7 +291,7 @@
 
 
 
-## 对routes进行安全控制
+##7. 对routes进行安全控制
 
 在routes.js加入以下代码以防止非授权的针对InsertIssue和IssuesList的访问
 
@@ -325,7 +325,7 @@
 图5 访问issues list网页显示Access Denided
 
 
-## 实现IssuesController
+##8. 实现IssuesController
 
 IssuesController在issues_controller.js里实现。首先，我们在subscriptions函数里通过subscribe使用2个参数来从服务器端订阅issues，第一个参数是我们需要订阅的collection的名字'issues',第二个参数是用户的id，这样限制只能获取该用户的issue。 然后，data属性用来获取特定id的数据项，在这里我们使用了findOne函数。 最后3个函数insert, list and edit则分别用来渲染不同的模板。该类代码如下
 
@@ -352,7 +352,7 @@ IssuesController在issues_controller.js里实现。首先，我们在subscriptio
 	});
 
 
-## 插入新Issue
+##9. 插入新Issue
 
 插入新Issue的页面代码在insert_issue.html文件里，其内容修改如下
 
@@ -368,7 +368,7 @@ IssuesController在issues_controller.js里实现。首先，我们在subscriptio
 图6 Insert Issue页面显示
 
 
-## 显示Issue列表
+##10. 显示Issue列表
 
 我们将issues_list.html的代码修改如下，以实现显示issue列表的功能。
 
@@ -453,3 +453,62 @@ IssuesController在issues_controller.js里实现。首先，我们在subscriptio
 ![](images/issues-list-done.png)
 
 图6 最终Issue List页面显示
+
+
+##11. 修改和删除Issue
+
+
+在IssueList的模板里，列表的最后一列是一个修改issue的链接，如下
+
+	<td>
+	 {{#linkTo route='editIssue'}}
+	   <i class="fa fa-pencil-square-o"></i>
+	 {{/linkTo}}
+	</td>
+
+这里指向一个EditIssue的模板，它指向route'/issue/:_id'，这个route包含_id 路由参数。为了输出一个可以编辑的form，我们在edit_issue.html中插入以下代码
+
+	<template name="EditIssue">
+	  <h1>Edit Issue</h1>
+	  {{> quickForm collection="Issues" doc=this id="editIssueForm" type="update" omitFields="createdBy" buttonContent="Update"}}
+	  <hr>
+	  {{> quickRemoveButton collection="Issues" _id=this._id beforeRemove=beforeRemove class="btn btn-danger"}}
+	</template>
+
+
+这里同样使用了autoform的机制，最后使用了一个quickRemoveButton模板来删除一个issue。另外，在Edit Issue里面我们使用了beforeRemove模板来让用户确认是否删除。当删除完成以后再显示IssuesList模板。
+
+	Template.EditIssue.events({
+	});
+	
+	Template.EditIssue.helpers({
+	  beforeRemove: function () {
+	      return function (collection, id) {
+	        var doc = collection.findOne(id);
+	        if (confirm('Really delete issue: "' + doc.title + '"?')) {
+	          this.remove();
+	          Router.go('issuesList');
+	        }
+	      };
+	    }
+	});
+	
+	AutoForm.addHooks(null, {
+	  onSuccess: function(operation, result, template) {
+	    Router.go('issuesList');
+	  }
+	});
+
+最终修改界面如下
+
+![](images/edit-issue.png)
+
+图7 修改Issue界面
+
+
+
+
+## 参考资料
+
+1. 本文参考如下文章编写，并修正了其中的一些错误 [How to Build Web Apps Ultra Fast with METEOR + Iron Scaffolding and Automatic Form Generation](https://medium.com/@s_eschweiler/how-to-build-web-apps-ultra-fast-with-meteor-iron-scaffolding-and-automatic-form-generation-11734eda8e67)
+2. 可运行demo参见网址：[http://wmzhai-issuetracker.meteor.com](http://wmzhai-issuetracker.meteor.com)
