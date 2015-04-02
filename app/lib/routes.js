@@ -25,3 +25,12 @@ Router.route('issues_list', {
   action: 'list',
   where: 'client'
 });
+
+Router.route('/issue/:_id', {
+  name: 'editIssue',
+  controller: 'IssuesController',
+  action: 'edit',
+  where: 'client'
+});
+
+
