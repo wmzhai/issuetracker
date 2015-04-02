@@ -18,3 +18,10 @@ Router.route('/insert_issue', {
   where: 'client'
 });
 
+
+Router.route('issues_list', {
+  name: 'issuesList',
+  controller: 'IssuesController',
+  action: 'list',
+  where: 'client'
+});

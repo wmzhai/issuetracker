@@ -21,6 +21,10 @@ IssuesController = RouteController.extend({
     this.render('InsertIssue', {});
   },
 
+  list: function() {
+    this.render('IssuesList', {});
+  },
+
   action: function () {
     // You can create as many action functions as you'd like.
     // This is the primary function for running your route.
