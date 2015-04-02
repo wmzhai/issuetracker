@@ -70,56 +70,53 @@
 	Issues = new Mongo.Collection('issues');
 	
 	Issues.attachSchema(new SimpleSchema({
-  		title:{
-    		type: String,
-    		label: "Title",
-    		max: 100
-  		},
-
-  		description:{
-    		type: String,
-   			label: "Description",
-  			max: 1024
-  		},
-
-  		dueDate:
-  		{
-    		type: Date,
-    		label: "Due Date",
-    		optional: true
-  		},
-
-  		priority:
- 		{
-    		type: String,
-    		label: "Priority",
-    		allowedValues: ['High', 'Medium', 'Low'],
-    		optional: true
-  		},
-
-  		createdBy: {
-    		type: String,
-    		autoValue: function() {
-       		return this.userId
-    	}
-  	}
+	  title:{
+	    type: String,
+	    label: "Title",
+	    max: 100
+	  },
+	  description:{
+	    type: String,
+	    label: "Description",
+	    max: 1024
+	  },
+	  dueDate:
+	  {
+	    type: Date,
+	    label: "Due Date",
+	    optional: true
+	  },
+	  priority:
+	  {
+	    type: String,
+	    label: "Priority",
+	    allowedValues: ['High', 'Medium', 'Low'],
+	    optional: true
+	  },
+	  createdBy: {
+	    type: String,
+	    autoValue: function() {
+	       return this.userId
+	    }
+	  }
 	}));
-
-	if (Meteor.isServer) {
-  		Issues.allow({
-    		insert: function (userId, doc) {
-      			return userId;
-    		},
-
-	    	update: function (userId, doc, fieldNames, modifier) {
-	      		return userId;
-	    	},
 	
-	    	remove: function (userId, doc) {
-	      		return userId;
-	    	}
-  		});
+	if (Meteor.isServer) {
+	  Issues.allow({
+	    insert: function (userId, doc) {
+	      return userId;
+	    },
+	
+	    update: function (userId, doc, fieldNames, modifier) {
+	      return userId;
+	    },
+	
+	    remove: function (userId, doc) {
+	      return userId;
+	    }
+	  });
 	}
+
 
 在上述代码中，首先我们创建了一个Mongo的collection，并将他的引用保存在Issues里。然后，一个collection的schema被attach到这个对象上，用来描述数据库结构。 在这里我们使用了一个SimpleSchema对象，这个对象包含4个字段title, description, dueDate and priority。 对于每一个字段，都定义了一个type和label，最后title和description都定义了max字段来限制字符串的长度。 而priority字段则设置了几个allowedValues作为其值域。
 
@@ -127,7 +124,7 @@
 另外，我们在 publish.js文件里面添加如下代码，以便客户端访问特定的数据集。
 
 	Meteor.publish('issues', function (userId) {
-  		return Issues.find({createdBy: userId});
+	  return Issues.find({createdBy: userId});
 	});
 
 这里的publish函数接受一个参数：userId。 这个参数用以限制被发布的对象仅限于创建它的user。
@@ -194,3 +191,101 @@
 ![](images/layout.png)
 
 图2 初始化程序界面
+
+
+## 创建Controller和Route
+
+执行如下指令，创建一个controller
+
+	iron g:controller Issues
+
+生成文件
+
+	app/lib/controllers/issues_controller.js
+
+再执行
+
+	$iron g:route 'insert_issue'
+	$iron g:route 'issues_list'
+	$iron g:route 'edit_issue'
+效果如下
+
+![](images/g-route.png)
+
+图3 通过iron指令生成route
+
+
+然后删掉在app/lib/controllers下面多生成的3个文件
+
+	edit_issue_controller.js
+	insert_issue_controller.js
+	issues_list_controller.js
+
+最后修改app/lib/controllers/issues_controller.js如下
+
+	IssuesController = RouteController.extend({
+	  subscriptions: function () {
+	    this.subscribe('issues', Meteor.userId());
+	  },
+	
+	  data: function () {
+	    return Issues.findOne({_id: this.params._id});
+	  },
+	
+	  insert: function () {
+	    this.render('InsertIssue', {});
+	  },
+	
+	  list: function() {
+	    this.render('IssuesList', {});
+	  },
+	
+	  edit: function() {
+	    this.render('EditIssue', {});
+	  }
+	});
+
+最后我们修改routes.js如下
+
+	Router.configure({
+	  layoutTemplate: 'MasterLayout',
+	  loadingTemplate: 'Loading',
+	  notFoundTemplate: 'NotFound'
+	});
+	
+	Router.route('/', {
+	  name: 'home',
+	  controller: 'HomeController',
+	  action: 'action',
+	  where: 'client'
+	});
+	
+	Router.route('/insert_issue', {
+	  name: 'insertIssue',
+	  controller: 'IssuesController',
+	  action: 'insert',
+	  where: 'client'
+	});
+	
+	
+	Router.route('issues_list', {
+	  name: 'issuesList',
+	  controller: 'IssuesController',
+	  action: 'list',
+	  where: 'client'
+	});
+	
+	Router.route('/issue/:_id', {
+	  name: 'editIssue',
+	  controller: 'IssuesController',
+	  action: 'edit',
+	  where: 'client'
+	});
+
+
+这时访问http://localhost:3000/issues_list会有如下显示
+
+![](images/issues-list.png)
+
+图4 访问issues list网页
+
