@@ -322,7 +322,7 @@
 
 ![](images/access-denied.png)
 
-图4 访问issues list网页显示Access Denided
+图5 访问issues list网页显示Access Denided
 
 
 ## 实现IssuesController
@@ -350,3 +350,22 @@ IssuesController在issues_controller.js里实现。首先，我们在subscriptio
 	    this.render('EditIssue', {});
 	  }
 	});
+
+
+## 插入新Issue
+
+插入新Issue的页面代码在insert_issue.html文件里，其内容修改如下
+
+	<template name="InsertIssue">
+	  <h1>Create New Issue</h1>
+	  {{> quickForm collection="Issues" id="insertIssueForm" type="insert" omitFields="createdBy" buttonContent="Create"}}
+	</template>
+
+这里我们使用autoform里面的quickForm生成页面，最终页面显示如下
+
+![](images/insert-issue.png)
+
+图6 Insert Issue页面显示
+
+
+
