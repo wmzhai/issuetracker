@@ -1,6 +1,6 @@
 # 使用Iron工具快速搭建Meteor程序
 
-采用Meteor框架搭建现代的web应用很快很方便，不过如果你使用iron脚手架工具和autoforms工具包的话，这个过程会更加快捷，这个例子就展示了如何一步一步地新建一个程序。
+采用Meteor框架搭建现代的web应用很快很方便，不过如果你使用iron scaffolding脚手架工具和autoforms工具包的话，这个过程会更加快捷，这个例子就展示了如何一步一步地新建一个程序。
 
 ##1. 安装Meteor和Iron工具
 
@@ -12,11 +12,11 @@
 
 ##2. 新建程序
 
-我们使用如下指令创建一个叫做issuetracker的程序
+使用如下指令创建一个叫做issuetracker的程序
 
 	$ iron create issuetracker
 
-这个脚手架工具将创建一个新的issuetracker目录，我们可以进入如图1所示目录看一下目录结构，我们的meteor程序在app子目录里。
+这个脚手架工具将创建一个新的issuetracker目录，这时可以进入如图1所示目录看一下目录结构，meteor程序在app子目录里。
 
 ![](images/iron-create-app.png)
 
@@ -25,7 +25,7 @@
 
 ##3. 安装新的package
 
-我们通过下述指令添加一些常规的meteor package，我们将在项目中使用
+可以通过下述指令添加一些常规的meteor package，我们将在项目中使用
 
 	$iron add twbs:bootstrap
 	$iron add aldeed:collection2
@@ -36,12 +36,12 @@
 	$iron add ian:accounts-ui-bootstrap-3
 	$iron add natestrauser:font-awesome
 
-然后我们再通过下属指令删除2个不使用的package
+然后再通过下属指令删除2个不使用的package
 
 	$iron remove autopublish
 	$iron remove insecure
 
-这是我们如果打开app/.meteor/packages文件的话，应该可以看到如下package
+这是如果打开app/.meteor/packages文件的话，应该可以看到如下package
 
 	meteor-platform
 	iron:router
@@ -118,10 +118,10 @@
 	}
 
 
-在上述代码中，首先我们创建了一个Mongo的collection，并将他的引用保存在Issues里。然后，一个collection的schema被attach到这个对象上，用来描述数据库结构。 在这里我们使用了一个SimpleSchema对象，这个对象包含4个字段title, description, dueDate and priority。 对于每一个字段，都定义了一个type和label，最后title和description都定义了max字段来限制字符串的长度。 而priority字段则设置了几个allowedValues作为其值域。
+在上述代码中，首先创建了一个Mongo的collection，并将他的引用保存在Issues里。然后，一个collection的schema被attach到这个对象上，用来描述数据库结构。 在这里使用一个SimpleSchema对象，这个对象包含4个字段title, description, dueDate and priority。 对于每一个字段，都定义了一个type和label，最后title和description都定义了max字段来限制字符串的长度。 而priority字段则设置了几个allowedValues作为其值域。
 
 
-另外，我们在 publish.js文件里面添加如下代码，以便客户端访问特定的数据集。
+另外，在publish.js文件里面添加如下代码，以便客户端访问特定的数据集。
 
 	Meteor.publish('issues', function (userId) {
 	  return Issues.find({createdBy: userId});
@@ -132,7 +132,7 @@
 
 ##5. 初始化用户界面
 
- 我们使用bootstrap来初始化用户界面，用户界面整体放在MasterLayout这个模板里，他的代码在如下文件里
+使用bootstrap来初始化用户界面，用户界面整体放在MasterLayout这个模板里，他的代码在如下文件里
 
 	app/client/templates/layouts/master_layout/master_layout.html
 
@@ -174,7 +174,7 @@
 	  </nav>
 	</template>
 
-注意，我们也需要修改一下如下css文件
+注意，也需要修改一下如下css文件
 
 	app/client/stylesheets/main.css
 
