@@ -6,15 +6,15 @@
 
 使用如下两个指令分别安装meteor和iron
 
-	$ curl http://install.meteor.com/ |sh
-	$ npm install -g iron-meteor
+	$curl http://install.meteor.com/ |sh
+	$npm install -g iron-meteor
 	
 
 ##2. 新建程序
 
 使用如下指令创建一个叫做issuetracker的程序
 
-	$ iron create issuetracker
+	$iron create issuetracker
 
 这个脚手架工具将创建一个新的issuetracker目录，这时可以进入如图1所示目录看一下目录结构，meteor程序在app子目录里。
 
@@ -59,7 +59,7 @@
 
 本项目管理issue的跟踪，只涉及到一个数据模型issue。在meteor中，数据被表述称collections，下述iron指令可以用于添加一个名叫issue的collection
 
-	iron g:collection issues
+	$iron g:collection issues
 
 这条指令实际上生成一个文件
 	
@@ -208,6 +208,7 @@
 	$iron g:route 'insert_issue'
 	$iron g:route 'issues_list'
 	$iron g:route 'edit_issue'
+
 效果如下
 
 ![](images/g-route.png)
@@ -288,7 +289,6 @@
 ![](images/issues-list.png)
 
 图4 访问issues list网页
-
 
 
 ##7. 对routes进行安全控制
@@ -504,7 +504,6 @@ IssuesController在issues_controller.js里实现。首先，我们在subscriptio
 ![](images/edit-issue.png)
 
 图7 修改Issue界面
-
 
 
 
