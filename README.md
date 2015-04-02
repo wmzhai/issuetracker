@@ -1,8 +1,8 @@
-# 使用Iron脚手架工具快速搭建Meteor程序
+# 使用Iron工具快速搭建Meteor程序
 
 采用Meteor框架搭建现代的web应用很快很方便，不过如果你使用iron脚手架工具和autoforms工具包的话，这个过程会更加快捷，这个例子就展示了如何一步一步地新建一个程序。
 
-## 安装Meteor和Iron命令行工具
+## 安装Meteor和Iron工具
 
 使用如下两个指令分别安装meteor和iron
 
@@ -131,3 +131,66 @@
 	});
 
 这里的publish函数接受一个参数：userId。 这个参数用以限制被发布的对象仅限于创建它的user。
+
+
+## 初始化用户界面
+
+ 我们使用bootstrap来初始化用户界面，用户界面整体放在MasterLayout这个模板里，他的代码在如下文件里
+
+	app/client/templates/layouts/master_layout/master_layout.html
+
+其代码如下
+
+	<template name="MasterLayout">
+	  <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+	    <div class="container">
+	      <div class="navbar-header">
+	          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navigationbar">
+	            <span class="sr-only">Toggle navigation</span>
+	            <span class="icon-bar"></span>
+	            <span class="icon-bar"></span>
+	            <span class="icon-bar"></span>
+	          </button>
+	          <a class="navbar-brand" href="/"><i class="fa fa-bug"></i> IssueTracker</a>
+	      </div>
+	      <div class="collapse navbar-collapse" id="navigationbar">
+	        <ul class="nav navbar-nav navbar-right">
+	            <li>{{#linkTo route="home"}}<i class="fa fa-home"></i> Home{{/linkTo}}</li>
+	            {{#if currentUser}}
+	              <li>{{#linkTo route="issuesList"}}<i class="fa fa-align-justify"></i> Issues{{/linkTo}}</li>
+	              <li>{{#linkTo route="insertIssue"}}<i class="fa fa-plus"></i> New Issue{{/linkTo}}</li>
+	            {{/if}}
+	            <li><div class="nav navbar-nav navbar-right"> {{> loginButtons}}</div></li>
+	        </ul>
+	      </div>
+	    </div>
+	  </nav>
+	  <div class="container">
+	    {{> yield}}
+	  </div>
+	  <nav class="navbar navbar-default navbar-fixed-bottom">
+	    <div class="container">
+	      <ul class="nav navbar-nav navbar-right">
+	          <li>Built with Meteor</li>
+	      </ul>
+	    </div>
+	  </nav>
+	</template>
+
+注意，我们也需要修改一下如下css文件
+
+	app/client/stylesheets/main.css
+
+其代码可以修改为
+
+	.main {
+	}
+	
+	body { padding-top: 70px; padding-bottom: 70px;}
+
+
+然后运行程序，可以看到如图2所示效果
+
+![](images/layout.png)
+
+图2 初始化程序界面
