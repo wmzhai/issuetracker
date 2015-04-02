@@ -33,4 +33,11 @@ Router.route('/issue/:_id', {
   where: 'client'
 });
 
-
+Router.onBeforeAction(function() {
+  if (!Meteor.user()) {
+    this.render('AccessDenied');
+  } else
+  {
+    this.next();
+  }
+}, {only: ['issuesList', 'insertIssue']});
